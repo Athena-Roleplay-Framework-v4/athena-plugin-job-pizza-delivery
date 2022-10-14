@@ -1,15 +1,10 @@
 import * as alt from 'alt-server';
-import { ServerMarkerController } from '../../../../server/streamers/marker';
-import { ServerBlipController } from '../../../../server/systems/blip';
-import { InteractionController } from '../../../../server/systems/interaction';
-import { Job } from '../../../../server/systems/job';
-import { MARKER_TYPE } from '../../../../shared/enums/markerTypes';
-import { Objective } from '../../../../shared/interfaces/job';
-import { Vector3 } from '../../../../shared/interfaces/vector';
+import { MARKER_TYPE } from '@AthenaShared/enums/markerTypes';
+import JobEnums from '@AthenaShared/interfaces/job';
+import { CurrencyTypes } from '@AthenaShared/enums/currency';
+import { Objective } from '@AthenaShared/interfaces/job';
+import { Athena } from '@AthenaServer/api/athena';
 import JOB_DATA from './data';
-import JobEnums from '../../../../shared/interfaces/job';
-import { CurrencyTypes } from '../../../../shared/enums/currency';
-import { Athena } from '../../../../server/api/athena';
 
 const START_POINT = { x: -1289.2508544921875, y: -1388.552734375, z: 3.481008052825928 };
 const TOTAL_DROP_OFFS = 5;
@@ -21,7 +16,7 @@ export class PizzaJob {
      * @memberof Job
      */
     static init() {
-        ServerBlipController.append({
+        Athena.controllers.blip.append({
             sprite: 465,
             color: 5,
             pos: START_POINT,
@@ -30,14 +25,14 @@ export class PizzaJob {
             text: 'Pizza Delivery',
         });
 
-        ServerMarkerController.append({
+        Athena.controllers.marker.append({
             pos: START_POINT,
             color: new alt.RGBA(255, 255, 255, 150),
             type: MARKER_TYPE.CYLINDER,
             scale: new alt.Vector3(1, 1, 1),
         });
 
-        InteractionController.add({
+        Athena.controllers.interaction.add({
             callback: PizzaJob.begin,
             description: 'Deliver Pizzas',
             position: START_POINT,
@@ -233,7 +228,7 @@ export class PizzaJob {
             },
         });
 
-        const job = new Job();
+        const job = new Athena.systems.job.instance();
         job.addVehicle(
             player,
             'faggio',
@@ -250,10 +245,10 @@ export class PizzaJob {
     /**
      * Creates and checks if a vehicle is in a spot and returns a spot if it is open.
      * @static
-     * @return {({ pos: Vector3; rot: Vector3 } | null)}
+     * @return {({ pos: alt.IVector3; rot: alt.IVector3 } | null)}
      * @memberof PizzaJob
      */
-    static async getVehicleSpawnPoint(): Promise<{ pos: Vector3; rot: Vector3 } | null> {
+    static async getVehicleSpawnPoint(): Promise<{ pos: alt.IVector3; rot: alt.IVector3 } | null> {
         for (let i = 0; i < JOB_DATA.PARKING_POINTS.length; i++) {
             const point = JOB_DATA.PARKING_POINTS[i];
             const pointTest = new alt.ColshapeSphere(point.pos.x, point.pos.y, point.pos.z - 1, 2);
@@ -284,10 +279,10 @@ export class PizzaJob {
     /**
      * Get random point from list of points.
      * @static
-     * @return {Array<Vector3>}
+     * @return {Array<alt.IVector3>}
      * @memberof Job
      */
-    static getRandomPoints(amount: number): Array<{ drop: Vector3; target: Vector3 }> {
+    static getRandomPoints(amount: number): Array<{ drop: alt.IVector3; target: alt.IVector3 }> {
         const points = [];
 
         while (points.length < amount) {
