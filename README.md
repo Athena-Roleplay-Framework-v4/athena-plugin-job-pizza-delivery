@@ -16,12 +16,12 @@ cd src/core/plugins
 **SSH**
 
 ```
-git clone git@github.com:Stuyk/athena-plugin-job-pizza-delivery.git
+git clone git@github.com:Athena-Roleplay-Framework/athena-plugin-job-pizza-delivery.git
 ```
 
 **HTTPS**
 ```
-git clone https://github.com/Stuyk/athena-plugin-job-pizza-delivery
+git clone https://github.com/Athena-Roleplay-Framework/athena-plugin-job-pizza-delivery
 ```
 
 4. Start the Server
